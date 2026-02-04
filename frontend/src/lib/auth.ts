@@ -163,7 +163,7 @@ export const authApi = {
 // Better Auth configuration (placeholder)
 export const betterAuthConfig = {
   // In a real implementation, this would be the actual Better Auth client configuration
-  baseUrl: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:8000',
+  baseUrl: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
   cookieName: 'better-auth-session',
   // Additional configuration would go here
 };
