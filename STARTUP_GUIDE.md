@@ -1,172 +1,99 @@
-# Phase III AI Chatbot - Startup Guide
+# 🚀 Startup Guide - Phase III Todo Application
 
-## Quick Start
+## Quick Start (Development)
 
-### 1. Backend Setup
+### Prerequisites
+- Python 3.13+ installed
+- Node.js 18+ and npm installed
+- PostgreSQL database (Neon DB configured in `.env`)
 
-**Step 1: Configure Environment**
+### Step 1: Start the Backend Server
+
 ```bash
 cd backend
-cp .env.example .env
-# Edit .env and add your COHERE_API_KEY
+python -m uvicorn src.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-**Step 2: Start Backend (with automatic port fallback)**
-```bash
-# This will try port 8000, then 8001 if busy
-python start.py
+**Expected Output:**
+```
+INFO:     Uvicorn running on http://0.0.0.0:8001
+INFO:     Database tables created successfully!
+INFO:     Application startup complete.
 ```
 
-**Alternative: Manual start**
-```bash
-# Port 8000
-python -m uvicorn src.main:app --reload --port 8000
+**Verify Backend is Running:**
+- Open http://localhost:8001/health - Should return `{"status":"healthy","version":"1.0.0"}`
+- Open http://localhost:8001/docs - Should show API documentation
 
-# Port 8001 (if 8000 is busy)
-python -m uvicorn src.main:app --reload --port 8001
-```
+### Step 2: Start the Frontend
 
-### 2. Frontend Setup
+Open a **new terminal window**:
 
-**Step 1: Install Dependencies**
 ```bash
 cd frontend
-npm install
-```
-
-**Step 2: Configure API URL**
-```bash
-# .env.local is already created with default settings
-# If backend is on port 8001, edit .env.local:
-# NEXT_PUBLIC_API_URL=http://localhost:8001
-```
-
-**Step 3: Start Frontend**
-```bash
 npm run dev
 ```
 
-### 3. Test the Application
-
-**Step 1: Open Browser**
+**Expected Output:**
 ```
-http://localhost:3000
-```
-
-**Step 2: Set User ID (temporary auth)**
-```javascript
-// Open browser console (F12) and run:
-localStorage.setItem('userId', '123e4567-e89b-12d3-a456-426614174000')
-// Refresh the page
+▲ Next.js 16.1.6
+- Local:        http://localhost:3000
+- Ready in 2.5s
 ```
 
-**Step 3: Test Chat**
-- Click the chat icon (bottom right)
-- Try: "Add a task to buy groceries"
-- Try: "What's on my list?"
-- Verify tasks appear in chat and task list
+### Step 3: Access the Application
 
-## Troubleshooting
+1. Open your browser to **http://localhost:3000**
+2. You'll see the landing page with "Start Free Today" button
+3. Click **"Sign Up"** to create a new account
+4. Enter your email and password (minimum 6 characters)
+5. After signup, you'll be automatically logged in and redirected to the dashboard
 
-### Backend Issues
+## 🔐 Authentication Flow
 
-**Problem: Port 8000 already in use**
-- Solution: The start.py script automatically tries port 8001
-- Or manually specify: `python -m uvicorn src.main:app --reload --port 8001`
+### First Time Users
+1. Click "Sign Up" on the homepage
+2. Create an account with email/password
+3. You'll receive a JWT token automatically
+4. You'll be redirected to `/dashboard`
 
-**Problem: COHERE_API_KEY not set**
-- Error: "COHERE_API_KEY is required"
-- Solution: Add your Cohere API key to backend/.env
+### Returning Users
+1. Click "Sign In" on the homepage
+2. Enter your credentials
+3. You'll be redirected to `/dashboard`
 
-**Problem: Database connection error**
-- Check DATABASE_URL in backend/.env
-- Default uses SQLite (test.db) - should work out of the box
+### Test Account (Already Created)
+- **Email:** test@example.com
+- **Password:** testpass123
 
-### Frontend Issues
+## 🐛 Troubleshooting
 
-**Problem: ERR_CONNECTION_REFUSED**
-- Check if backend is running: `curl http://localhost:8000/health`
-- Check if API URL matches backend port in frontend/.env.local
-- If backend is on 8001, update: `NEXT_PUBLIC_API_URL=http://localhost:8001`
+### Frontend stuck on landing page?
+**Solution:** You need to sign up or log in first. The app requires authentication.
 
-**Problem: CORS errors**
-- Backend CORS is configured for localhost:3000 and localhost:3001
-- Check browser console for specific CORS error
-- Verify backend logs show the request
+### Backend not responding?
+**Check:**
+1. Is the backend server running? Check terminal for errors
+2. Is it running on port 8001? Run: `curl http://localhost:8001/health`
+3. Check backend logs for database connection errors
 
-**Problem: Chat widget not appearing**
-- Set userId in localStorage (see Step 2 above)
-- Check browser console for errors
-- Verify ChatWidget is imported in ClientLayout.tsx
-
-### Chat Issues
-
-**Problem: "AI service configuration error"**
-- COHERE_API_KEY is missing or invalid
-- Check backend/.env file
-
-**Problem: Chat sends but no response**
-- Check backend logs for errors
-- Verify Cohere API key is valid
-- Check network tab in browser for API response
-
-**Problem: Tasks not appearing in chat**
-- Verify backend database has tasks
-- Check browser console for errors
-- Try: "What's on my list?" to see all tasks
-
-## Environment Variables
-
-### Backend (.env)
-```env
-DATABASE_URL=sqlite:///./test.db
-JWT_SECRET=your-secret-key
-COHERE_API_KEY=your-cohere-api-key-here
+### Database errors?
+**Solution:** Run the database initialization script:
+```bash
+cd backend
+python init_db.py
 ```
 
-### Frontend (.env.local)
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
+### CORS errors in browser console?
+**Solution:** Make sure:
+1. Backend is running on port 8001
+2. Frontend is running on port 3000
+3. Both servers are running simultaneously
 
-## Port Configuration
+## 💡 Development Tips
 
-**Backend Ports:**
-- Primary: 8000
-- Fallback: 8001
-
-**Frontend Port:**
-- Default: 3000
-
-**If backend runs on 8001:**
-1. Update frontend/.env.local: `NEXT_PUBLIC_API_URL=http://localhost:8001`
-2. Restart frontend: `npm run dev`
-
-## Testing Checklist
-
-- [ ] Backend starts successfully
-- [ ] Frontend starts successfully
-- [ ] Health check works: `curl http://localhost:8000/health`
-- [ ] Chat widget appears on page
-- [ ] Can send message: "Add a task to buy groceries"
-- [ ] Task appears in chat response
-- [ ] Task appears in task list UI
-- [ ] Can list tasks: "What's on my list?"
-- [ ] Conversation persists after page refresh
-
-## Next Steps
-
-After successful startup:
-1. Test all MVP features (add tasks, list tasks)
-2. Verify conversation persistence
-3. Test with multiple users (different user IDs)
-4. Check database for saved conversations and messages
-
-## Getting Help
-
-If you encounter issues:
-1. Check backend logs for errors
-2. Check browser console for frontend errors
-3. Verify all environment variables are set
-4. Ensure Cohere API key is valid
-5. Check that ports are not blocked by firewall
+1. **Keep both servers running** - Backend on port 8001, Frontend on port 3000
+2. **Check browser console** - Look for API errors or CORS issues
+3. **Check backend logs** - Terminal shows all API requests and errors
+4. **Use the test account** - test@example.com / testpass123 for quick testing
+5. **API Documentation** - Visit http://localhost:8001/docs for interactive API testing
