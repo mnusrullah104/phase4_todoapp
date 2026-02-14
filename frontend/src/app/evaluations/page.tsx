@@ -36,10 +36,11 @@ export default function EvaluationsPage() {
 
   const loadTasks = async (uid: string) => {
     try {
-      const response = await taskApi.getTasks(uid);
-      setTasks(response.data);
+      const data = await taskApi.getTasks(uid);
+      setTasks(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Error loading tasks:', err);
+      setTasks([]);
     }
   };
 

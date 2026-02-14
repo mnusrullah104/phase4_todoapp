@@ -39,6 +39,9 @@ apiClient.interceptors.request.use(
   }
 );
 
+// Track ongoing requests to prevent duplicates
+const ongoingRequests = new Map<string, Promise<any>>();
+
 // Response interceptor to handle errors
 apiClient.interceptors.response.use(
   (response) => response,
@@ -46,9 +49,22 @@ apiClient.interceptors.response.use(
     // Handle 401 Unauthorized
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userId');
-        window.location.href = '/login';
+        // Only redirect if not already on login page
+        if (!window.location.pathname.includes('/login')) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('userId');
+
+          // Show a toast notification before redirecting
+          const event = new CustomEvent('auth-expired', {
+            detail: { message: 'Your session has expired. Please log in again.' }
+          });
+          window.dispatchEvent(event);
+
+          // Delay redirect slightly to allow toast to show
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 1000);
+        }
       }
     }
     return Promise.reject(error);
@@ -127,11 +143,45 @@ export const taskApi = {
   updateTask: (userId: string, taskId: string, taskData: { title?: string; description?: string; completed?: boolean }) =>
     apiCall(() => apiClient.put(`/api/${userId}/tasks/${taskId}`, taskData), 'Failed to update task'),
 
-  deleteTask: (userId: string, taskId: string) =>
-    apiCall(() => apiClient.delete(`/api/${userId}/tasks/${taskId}`), 'Failed to delete task'),
+  deleteTask: async (userId: string, taskId: string) => {
+    // Prevent duplicate delete requests
+    const requestKey = `delete-${userId}-${taskId}`;
 
-  toggleTaskCompletion: (userId: string, taskId: string, completed: boolean) =>
-    apiCall(() => apiClient.patch(`/api/${userId}/tasks/${taskId}/complete`, { completed }), 'Failed to update task status'),
+    if (ongoingRequests.has(requestKey)) {
+      // Return the existing promise to prevent duplicate requests
+      return ongoingRequests.get(requestKey);
+    }
+
+    const requestPromise = apiCall(
+      () => apiClient.delete(`/api/${userId}/tasks/${taskId}`),
+      'Failed to delete task'
+    ).finally(() => {
+      // Clean up after request completes
+      ongoingRequests.delete(requestKey);
+    });
+
+    ongoingRequests.set(requestKey, requestPromise);
+    return requestPromise;
+  },
+
+  toggleTaskCompletion: async (userId: string, taskId: string, completed: boolean) => {
+    // Prevent duplicate toggle requests
+    const requestKey = `toggle-${userId}-${taskId}`;
+
+    if (ongoingRequests.has(requestKey)) {
+      return ongoingRequests.get(requestKey);
+    }
+
+    const requestPromise = apiCall(
+      () => apiClient.patch(`/api/${userId}/tasks/${taskId}/complete`, { completed }),
+      'Failed to update task status'
+    ).finally(() => {
+      ongoingRequests.delete(requestKey);
+    });
+
+    ongoingRequests.set(requestKey, requestPromise);
+    return requestPromise;
+  },
 };
 
 // API endpoints for authentication

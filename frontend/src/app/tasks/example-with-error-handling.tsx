@@ -50,7 +50,7 @@ export default function TasksPageExample() {
   const loadTasks = async (uid: string) => {
     try {
       setLoading(true);
-      const data = await taskApi.getTasks(uid);
+      const data = await taskApi.getTasks(uid) as Task[];
       setTasks(data);
     } catch (error: any) {
       toast.error(error.message || 'Failed to load tasks');
@@ -67,7 +67,7 @@ export default function TasksPageExample() {
       const newTask = await taskApi.createTask(userId, {
         title: 'New Task',
         description: 'Task description'
-      });
+      }) as Task;
       setTasks(prev => [newTask, ...prev]);
       toast.success('Task created successfully!');
     } catch (error: any) {

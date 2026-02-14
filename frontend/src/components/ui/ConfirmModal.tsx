@@ -31,6 +31,13 @@ export default function ConfirmModal({
   isLoading = false,
   variant = 'danger'
 }: ConfirmModalProps) {
+  // Prevent double-click on confirm
+  const handleConfirm = () => {
+    if (!isLoading) {
+      onConfirm();
+    }
+  };
+
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -125,7 +132,7 @@ export default function ConfirmModal({
                   {cancelText}
                 </button>
                 <button
-                  onClick={onConfirm}
+                  onClick={handleConfirm}
                   disabled={isLoading}
                   className={`flex-1 px-4 py-2.5 ${styles.button} text-white rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 shadow-lg`}
                 >

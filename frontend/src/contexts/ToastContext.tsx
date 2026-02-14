@@ -4,7 +4,7 @@
  */
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, AlertCircle, Info, X } from 'lucide-react';
 
@@ -57,6 +57,25 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     },
     [removeToast]
   );
+
+  // Listen for auth expiration events
+  useEffect(() => {
+    const handleAuthExpired = (event: any) => {
+      if (event.detail?.message) {
+        showToast('warning', event.detail.message, 3000);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth-expired', handleAuthExpired);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('auth-expired', handleAuthExpired);
+      }
+    };
+  }, [showToast]);
 
   const success = useCallback(
     (message: string, duration?: number) => showToast('success', message, duration),

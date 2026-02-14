@@ -27,8 +27,8 @@ export default function TaskForm({ userId, onTaskCreated }: TaskFormProps) {
     setError(null);
 
     try {
-      const response = await taskApi.createTask(userId, { title, description });
-      onTaskCreated(response.data);
+      const taskData = await taskApi.createTask(userId, { title, description }) as Task;
+      onTaskCreated(taskData);
 
       // Reset form
       setTitle('');

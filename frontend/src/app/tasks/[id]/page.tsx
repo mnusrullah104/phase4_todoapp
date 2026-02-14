@@ -37,8 +37,7 @@ export default function EditTaskPage() {
   const loadTask = async (uid: string) => {
     try {
       setLoading(true);
-      const response = await taskApi.getTask(uid, taskId);
-      const taskData = response.data;
+      const taskData = await taskApi.getTask(uid, taskId) as Task;
       setTask(taskData);
       setTitle(taskData.title);
       setDescription(taskData.description || '');

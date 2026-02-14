@@ -19,8 +19,8 @@ export default function TaskItem({ task, onTaskUpdated, onTaskDeleted, onTaskTog
 
   const handleSave = async () => {
     try {
-      const response = await taskApi.updateTask(task.user_id, task.id, { title, description });
-      onTaskUpdated(response.data);
+      const taskData = await taskApi.updateTask(task.user_id, task.id, { title, description }) as Task;
+      onTaskUpdated(taskData);
       setIsEditing(false);
     } catch (err) {
       console.error('Error updating task:', err);
