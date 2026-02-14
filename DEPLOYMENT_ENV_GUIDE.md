@@ -2,8 +2,14 @@
 
 ## 🚀 Deployment URLs
 
-- **Frontend (Vercel)**: https://todo-fullstack-mna-86.vercel.app
+### Phase 3 (AI Chatbot - Current)
+- **Frontend (Vercel)**: https://taskflow-phase3-ai-chatbot.vercel.app
 - **Backend (Hugging Face)**: https://mnusrulah104-todoapp-chatbot.hf.space
+- **GitHub Repository**: https://github.com/mnusrullah104/todo-web_phase3
+
+### Phase 2 (Previous - Unchanged)
+- **Frontend (Vercel)**: https://todo-fullstack-mna-86.vercel.app
+- **GitHub Repository**: https://github.com/mnusrullah104/todo_web_phase2
 
 ---
 
@@ -37,7 +43,7 @@ your-cohere-api-key-here
 
 ## 🌐 Vercel (Frontend) - Environment Variables
 
-Go to: https://vercel.com/muhammad-nasrullahs-projects/frontend/settings/environment-variables
+Go to: https://vercel.com/muhammad-nasrullahs-projects/taskflow-phase3-ai-chatbot/settings/environment-variables
 
 Add this 1 variable:
 
@@ -71,7 +77,7 @@ https://mnusrulah104-todoapp-chatbot.hf.space
 
 ## 🧪 Testing Your Deployment
 
-1. **Open Frontend**: https://todo-fullstack-mna-86.vercel.app
+1. **Open Frontend**: https://taskflow-phase3-ai-chatbot.vercel.app
 2. **Sign Up**: Create a new account
 3. **Test AI Chat**: Click the blue chat icon
 4. **Try Commands**:
@@ -95,7 +101,7 @@ https://mnusrulah104-todoapp-chatbot.hf.space
 
 ### CORS Issues:
 If you see CORS errors, the backend needs to allow your Vercel domain.
-Update backend CORS settings to include: `https://todo-fullstack-mna-86.vercel.app`
+Update backend CORS settings to include: `https://taskflow-phase3-ai-chatbot.vercel.app`
 
 ---
 
