@@ -8,8 +8,8 @@ import axios, { AxiosError } from 'axios';
 const getBaseURL = (): string => {
   const baseURL = process.env.NEXT_PUBLIC_API_URL;
   if (!baseURL) {
-    console.error('NEXT_PUBLIC_API_URL is not set.');
-    return 'http://localhost:8001';
+    // Default to Hugging Face Space API
+    return 'https://mnusrulah104-todoapp-chatbot.hf.space';
   }
   return baseURL;
 };

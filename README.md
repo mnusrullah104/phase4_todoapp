@@ -227,6 +227,33 @@ npm test
 
 ## 🚢 Deployment
 
+### Production Deployment
+
+**Backend:** Deployed on Hugging Face Spaces
+- URL: https://mnusrulah104-todoapp-chatbot.hf.space
+- API Docs: https://mnusrulah104-todoapp-chatbot.hf.space/docs
+- Status: ✅ Live
+
+**Frontend:** Configure to use production backend
+```bash
+cd frontend
+# Create .env.local with production API URL
+echo "NEXT_PUBLIC_API_URL=https://mnusrulah104-todoapp-chatbot.hf.space" > .env.local
+npm run dev
+```
+
+### Local Development
+
+For local development, override the API URL:
+```bash
+cd frontend
+# Create .env.local with local backend
+echo "NEXT_PUBLIC_API_URL=http://localhost:8001" > .env.local
+npm run dev
+```
+
+### Deployment Guides
+
 See detailed deployment guides in `docs/deployment/`:
 - [Vercel Deployment Guide](docs/deployment/README_VERCEL_DEPLOYMENT.md)
 - [Hugging Face Deployment](docs/deployment/README_HF_DEPLOYMENT.md)

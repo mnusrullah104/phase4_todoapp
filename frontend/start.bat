@@ -13,8 +13,8 @@ if not exist node_modules (
 
 REM Check if .env.local exists
 if not exist .env.local (
-    echo WARNING: .env.local not found, using default API URL (http://localhost:8000)
-    echo If backend is on port 8001, create .env.local with: NEXT_PUBLIC_API_URL=http://localhost:8001
+    echo WARNING: .env.local not found, using default API URL (Hugging Face Space)
+    echo For local development, create .env.local with: NEXT_PUBLIC_API_URL=http://localhost:8001
     echo.
 )
 

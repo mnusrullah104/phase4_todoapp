@@ -25,7 +25,7 @@ export interface ChatError {
   detail: string;
 }
 
-const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://mnusrulah104-todoapp-chatbot.hf.space';
 
 /**
  * Send a chat message to the backend.
