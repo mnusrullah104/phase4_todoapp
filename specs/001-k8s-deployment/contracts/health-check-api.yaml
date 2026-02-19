@@ -1,0 +1,269 @@
+# Health Check API Contract
+
+**Purpose**: OpenAPI specification for health check endpoints
+
+**Version**: 1.0.0
+
+```yaml
+openapi: 3.0.3
+info:
+  title: Todo App Health Check API
+  description: Health check endpoints for Kubernetes probes
+  version: 1.0.0
+  contact:
+    name: Todo App Team
+
+servers:
+  - url: http://localhost:8000
+    description: Backend service
+
+paths:
+  /health:
+    get:
+      summary: Liveness probe endpoint
+      description: |
+        Simple health check that returns 200 if the application is alive.
+        Used by Kubernetes liveness probe to determine if pod should be restarted.
+        This endpoint should be fast and not check external dependencies.
+      operationId: getHealth
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Application is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy]
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-02-18T10:30:00Z"
+                required:
+                  - status
+        '500':
+          description: Application is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /ready:
+    get:
+      summary: Readiness probe endpoint
+      description: |
+        Readiness check that verifies the application can handle requests.
+        Used by Kubernetes readiness probe to determine if pod should receive traffic.
+        This endpoint checks external dependencies (database connectivity).
+      operationId: getReady
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Application is ready to receive traffic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ready]
+                    example: ready
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2026-02-18T10:30:00Z"
+                  checks:
+                    type: object
+                    properties:
+                      database:
+                        type: string
+                        enum: [ok, error]
+                        example: ok
+                required:
+                  - status
+        '503':
+          description: Application is not ready (dependencies unavailable)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [not_ready]
+                    example: not_ready
+                  timestamp:
+                    type: string
+                    format: date-time
+                  checks:
+                    type: object
+                    properties:
+                      database:
+                        type: string
+                        enum: [ok, error]
+                        example: error
+                  error:
+                    type: string
+                    example: "Database connection failed"
+                required:
+                  - status
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+      required:
+        - status
+        - message
+```
+
+## Implementation Requirements
+
+### Backend (FastAPI)
+
+**Liveness Endpoint** (`/health`):
+```python
+@app.get("/health")
+async def health():
+    """Simple liveness check - returns 200 if app is running"""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
+```
+
+**Readiness Endpoint** (`/ready`):
+```python
+@app.get("/ready")
+async def ready():
+    """Readiness check - verifies database connectivity"""
+    try:
+        # Check database connection
+        await db.execute("SELECT 1")
+        return {
+            "status": "ready",
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "checks": {
+                "database": "ok"
+            }
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "status": "not_ready",
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "checks": {
+                    "database": "error"
+                },
+                "error": str(e)
+            }
+        )
+```
+
+### Frontend (Next.js)
+
+Frontend uses root path `/` for both probes (simple HTTP GET returns 200 if Next.js is serving).
+
+## Kubernetes Probe Configuration
+
+**Backend Liveness Probe**:
+```yaml
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+```
+
+**Backend Readiness Probe**:
+```yaml
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+```
+
+**Frontend Probes**:
+```yaml
+livenessProbe:
+  httpGet:
+    path: /
+    port: 3000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+```
+
+## Testing
+
+**Manual Testing**:
+```bash
+# Test backend health
+curl http://localhost:8000/health
+
+# Test backend readiness
+curl http://localhost:8000/ready
+
+# Test frontend
+curl http://localhost:3000/
+```
+
+**Kubernetes Testing**:
+```bash
+# Check probe status
+kubectl describe pod <pod-name> -n todo-app | grep -A 10 "Liveness\|Readiness"
+
+# View probe failures
+kubectl get events -n todo-app | grep -i probe
+```
+
+## Design Rationale
+
+**Why separate /health and /ready?**
+- `/health`: Fast, no dependencies, checks if app process is alive
+- `/ready`: Checks dependencies, determines if app can handle traffic
+- Separation prevents restart loops when dependencies are temporarily unavailable
+
+**Why check database in /ready?**
+- Application cannot function without database
+- Prevents routing traffic to pods that can't access database
+- Allows graceful handling of database maintenance
+
+**Why not check Cohere API?**
+- Cohere API failures should be handled gracefully in application
+- Don't want to mark pod unready due to external API issues
+- Application can queue requests or show user-friendly errors

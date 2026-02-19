@@ -1,0 +1,364 @@
+# Helm Values Schema
+
+**Purpose**: JSON Schema for validating Helm values.yaml configuration
+
+**Version**: 1.0.0
+
+```yaml
+$schema: http://json-schema.org/draft-07/schema#
+title: Todo App Helm Chart Values
+description: Configuration values for the Todo AI Chatbot Kubernetes deployment
+type: object
+
+properties:
+  global:
+    type: object
+    properties:
+      namespace:
+        type: string
+        description: Kubernetes namespace for deployment
+        default: todo-app
+        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+      imagePullPolicy:
+        type: string
+        description: Image pull policy
+        enum: [Always, IfNotPresent, Never]
+        default: IfNotPresent
+
+  backend:
+    type: object
+    required: [image, replicas, resources]
+    properties:
+      image:
+        type: object
+        required: [repository, tag]
+        properties:
+          repository:
+            type: string
+            description: Backend container image repository
+            default: todo-backend
+          tag:
+            type: string
+            description: Image tag
+            default: latest
+      replicas:
+        type: integer
+        description: Number of backend pod replicas
+        minimum: 1
+        maximum: 10
+        default: 1
+      resources:
+        type: object
+        required: [requests, limits]
+        properties:
+          requests:
+            type: object
+            required: [cpu, memory]
+            properties:
+              cpu:
+                type: string
+                description: CPU request
+                pattern: "^[0-9]+m?$"
+                default: "100m"
+              memory:
+                type: string
+                description: Memory request
+                pattern: "^[0-9]+(Mi|Gi)$"
+                default: "128Mi"
+          limits:
+            type: object
+            required: [cpu, memory]
+            properties:
+              cpu:
+                type: string
+                description: CPU limit
+                pattern: "^[0-9]+m?$"
+                default: "500m"
+              memory:
+                type: string
+                description: Memory limit
+                pattern: "^[0-9]+(Mi|Gi)$"
+                default: "512Mi"
+      probes:
+        type: object
+        properties:
+          liveness:
+            type: object
+            properties:
+              path:
+                type: string
+                default: /health
+              port:
+                type: integer
+                default: 8000
+              initialDelaySeconds:
+                type: integer
+                minimum: 0
+                default: 30
+              periodSeconds:
+                type: integer
+                minimum: 1
+                default: 10
+              timeoutSeconds:
+                type: integer
+                minimum: 1
+                default: 5
+              failureThreshold:
+                type: integer
+                minimum: 1
+                default: 3
+          readiness:
+            type: object
+            properties:
+              path:
+                type: string
+                default: /ready
+              port:
+                type: integer
+                default: 8000
+              initialDelaySeconds:
+                type: integer
+                minimum: 0
+                default: 10
+              periodSeconds:
+                type: integer
+                minimum: 1
+                default: 5
+              timeoutSeconds:
+                type: integer
+                minimum: 1
+                default: 3
+              failureThreshold:
+                type: integer
+                minimum: 1
+                default: 3
+      service:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [ClusterIP, NodePort, LoadBalancer]
+            default: ClusterIP
+          port:
+            type: integer
+            minimum: 1
+            maximum: 65535
+            default: 8000
+
+  frontend:
+    type: object
+    required: [image, replicas, resources]
+    properties:
+      image:
+        type: object
+        required: [repository, tag]
+        properties:
+          repository:
+            type: string
+            description: Frontend container image repository
+            default: todo-frontend
+          tag:
+            type: string
+            description: Image tag
+            default: latest
+      replicas:
+        type: integer
+        description: Number of frontend pod replicas
+        minimum: 1
+        maximum: 10
+        default: 1
+      resources:
+        type: object
+        required: [requests, limits]
+        properties:
+          requests:
+            type: object
+            required: [cpu, memory]
+            properties:
+              cpu:
+                type: string
+                pattern: "^[0-9]+m?$"
+                default: "100m"
+              memory:
+                type: string
+                pattern: "^[0-9]+(Mi|Gi)$"
+                default: "128Mi"
+          limits:
+            type: object
+            required: [cpu, memory]
+            properties:
+              cpu:
+                type: string
+                pattern: "^[0-9]+m?$"
+                default: "500m"
+              memory:
+                type: string
+                pattern: "^[0-9]+(Mi|Gi)$"
+                default: "512Mi"
+      probes:
+        type: object
+        properties:
+          liveness:
+            type: object
+            properties:
+              path:
+                type: string
+                default: /
+              port:
+                type: integer
+                default: 3000
+              initialDelaySeconds:
+                type: integer
+                minimum: 0
+                default: 30
+              periodSeconds:
+                type: integer
+                minimum: 1
+                default: 10
+              timeoutSeconds:
+                type: integer
+                minimum: 1
+                default: 5
+              failureThreshold:
+                type: integer
+                minimum: 1
+                default: 3
+          readiness:
+            type: object
+            properties:
+              path:
+                type: string
+                default: /
+              port:
+                type: integer
+                default: 3000
+              initialDelaySeconds:
+                type: integer
+                minimum: 0
+                default: 10
+              periodSeconds:
+                type: integer
+                minimum: 1
+                default: 5
+              timeoutSeconds:
+                type: integer
+                minimum: 1
+                default: 3
+              failureThreshold:
+                type: integer
+                minimum: 1
+                default: 3
+      service:
+        type: object
+        properties:
+          type:
+            type: string
+            enum: [ClusterIP, NodePort, LoadBalancer]
+            default: NodePort
+          port:
+            type: integer
+            minimum: 1
+            maximum: 65535
+            default: 3000
+          nodePort:
+            type: integer
+            minimum: 30000
+            maximum: 32767
+            description: NodePort for external access (optional)
+
+  ingress:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        description: Enable ingress
+        default: true
+      className:
+        type: string
+        description: Ingress class name
+        default: nginx
+      host:
+        type: string
+        description: Ingress hostname
+        default: todo-app.local
+      tls:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+            default: false
+          secretName:
+            type: string
+            description: TLS secret name
+
+  secrets:
+    type: object
+    description: Secret references (secrets must be created manually)
+    properties:
+      name:
+        type: string
+        description: Name of the Kubernetes secret containing app credentials
+        default: app-secrets
+      keys:
+        type: object
+        properties:
+          cohereApiKey:
+            type: string
+            default: COHERE_API_KEY
+          databaseUrl:
+            type: string
+            default: DATABASE_URL
+          jwtSecret:
+            type: string
+            default: JWT_SECRET
+
+required:
+  - backend
+  - frontend
+```
+
+## Usage
+
+Validate values file:
+```bash
+helm lint helm/todo-app
+helm template todo-app helm/todo-app --values values-dev.yaml --validate
+```
+
+## Example values-dev.yaml
+
+```yaml
+global:
+  namespace: todo-app
+  imagePullPolicy: IfNotPresent
+
+backend:
+  image:
+    repository: todo-backend
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+frontend:
+  image:
+    repository: todo-frontend
+    tag: latest
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+ingress:
+  enabled: true
+  host: todo-app.local
+```

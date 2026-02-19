@@ -1,18 +1,22 @@
 <!-- SYNC IMPACT REPORT
-Version change: 1.0.0 -> 1.1.0
-Modified principles: None (principles unchanged)
-Added sections:
-  - Phase III Detailed Standards (new comprehensive section)
-  - Enhanced Phase III requirements in Phase Consistency Rules
-Removed sections: None
+Version change: 1.2.0 -> 1.3.0
+Modified principles: None (core principles unchanged)
+Added sections: None (replaced existing Phase IV content)
+Removed sections: None (replaced existing Phase IV content)
+Replaced sections:
+  - Phase IV Detailed Standards (replaced production readiness with Kubernetes deployment)
+  - Phase IV in Phase Consistency Rules (replaced with cloud-native deployment focus)
+  - Phase IV Specific Quality Gates (replaced with Kubernetes deployment criteria)
 Templates requiring updates:
   - .specify/templates/plan-template.md ✅ already aligned
   - .specify/templates/spec-template.md ✅ already aligned
   - .specify/templates/tasks-template.md ✅ already aligned
-  - .specify/templates/commands/*.md ⚠ review for Phase III references
+  - .specify/templates/commands/*.md ⚠ review for Phase IV references
 Follow-up TODOs: None
-Rationale: MINOR bump - materially expanded Phase III guidance with Cohere API requirement,
-detailed MCP tool specifications, agent behavior standards, and success criteria.
+Rationale: MINOR bump - materially changed Phase IV direction from production readiness/UX
+improvements to cloud-native Kubernetes deployment with Minikube, Helm, Docker, kubectl-ai,
+kagent, and reusable intelligence (skills/subagents). Comprehensive new standards for
+containerization, orchestration, AI-assisted DevOps, security, and local deployment.
 -->
 
 # Hackathon II — Evolution of Todo Constitution
@@ -123,11 +127,17 @@ Phase III (AI Chatbot):
 - Integrate OpenAI ChatKit UI into existing frontend
 - Always pass and enforce user_id (from auth) in every tool call and chat request
 
-Phase IV (Kubernetes):
-- Dockerized services
-- Helm charts
-- Minikube deployment
-- AI-assisted DevOps allowed
+Phase IV (Kubernetes Deployment):
+- Build strictly on top of existing Phase I-III work (never break existing functionality)
+- Shift focus to cloud-native deployment: containerize, orchestrate, and manage locally on
+  Kubernetes
+- Deploy full Phase III chatbot (FastAPI backend, Next.js frontend, Neon DB integration,
+  Cohere-powered agent, MCP tools) on Minikube
+- Emphasize reusable intelligence: Create and use skills/subagents for deployment tasks
+- Maintain stateless architecture, user isolation, security, and scalability
+- Prioritize spec-driven development for all deployment artifacts (no manual YAML writing)
+- Promote AIOps: Use AI tools like kubectl-ai and kagent for Kubernetes operations
+- Local-only deployment (no cloud resources in Phase IV; save for Phase V)
 
 Phase V (Cloud + Kafka):
 - Event-driven architecture
@@ -182,6 +192,112 @@ Phase V (Cloud + Kafka):
 - MUST provide seamless user experience between traditional UI and chat interface
 - MUST handle authentication state correctly
 
+## Phase IV Detailed Standards
+
+### Containerization Requirements
+- MUST Dockerize all components (frontend, backend, database proxy if needed)
+- MUST use multi-stage builds for optimization (target: <500MB total for all images)
+- MUST externalize all configuration via environment variables
+- MUST NOT hardcode secrets in Docker images
+- MUST include health check instructions in Dockerfiles
+- MUST optimize layer caching for faster builds
+- MUST use official base images (node:alpine, python:slim, etc.)
+- MUST document all Dockerfile build arguments and environment variables
+
+### Orchestration Requirements
+- MUST use Helm charts for packaging and deployment
+- MUST generate all Helm charts via spec-driven process (no manual YAML editing)
+- MUST make charts reusable and parameterized (values.yaml)
+- MUST deploy to Minikube (local Kubernetes cluster)
+- MUST support reproducible deployment (helm install succeeds on fresh cluster)
+- MUST define proper resource limits and requests
+- MUST implement readiness and liveness probes for all services
+- MUST use Kubernetes Services for internal communication
+- MUST expose frontend via NodePort or LoadBalancer for local access
+
+### AI-Assisted DevOps (AIOps)
+- MUST integrate kubectl-ai for natural language Kubernetes commands
+- MUST integrate kagent for agentic cluster management
+- MUST demonstrate AI tool usage in documentation or demo
+- MUST document AI-assisted workflows in CLAUDE.md
+- SHOULD use AI tools for troubleshooting and debugging deployments
+
+### Reusable Intelligence Requirements
+- MUST develop at least 2-3 skills/subagents for deployment tasks
+- Example skills:
+  - Dockerfile generator skill (generates optimized Dockerfiles from specs)
+  - Helm chart generator skill (generates Kubernetes manifests from specs)
+  - Deployment troubleshooter skill (diagnoses and fixes common issues)
+- MUST document each skill's purpose, inputs, and outputs
+- MUST test skills with real deployment scenarios
+- MUST make skills reusable across different projects
+- Skills MUST follow spec-driven development principles
+
+### Security Requirements
+- MUST implement basic RBAC (Role-Based Access Control)
+- MUST store secrets in Kubernetes Secrets (never in code or images)
+- MUST use Kubernetes Secrets for Cohere API key, database credentials, JWT secrets
+- MUST implement network policies for pod-to-pod communication
+- MUST NOT expose sensitive data in logs or error messages
+- MUST scan Docker images for vulnerabilities (basic security scan)
+- MUST follow principle of least privilege for service accounts
+- MUST validate all external inputs at API boundaries
+
+### Observability Requirements
+- MUST implement structured JSON logging (user_id, request_id, latency, errors)
+- MUST configure readiness probes (check database connectivity, API health)
+- MUST configure liveness probes (detect and restart unhealthy pods)
+- MUST expose health check endpoints (/health, /ready)
+- MUST log all tool calls with parameters and results
+- MUST track key metrics:
+  - Pod startup time
+  - Request latency
+  - Error rates
+  - Resource utilization
+- SHOULD integrate with Kubernetes dashboard for monitoring
+
+### Testing Requirements
+- MUST validate deployment with end-to-end tests
+- MUST test chat interactions via kubectl port-forward
+- MUST verify all Phase I-III features work in Kubernetes environment
+- MUST test pod restart scenarios (data persistence)
+- MUST test resource limits (no OOM kills under normal load)
+- MUST validate secrets are properly injected
+- MUST test service discovery and internal communication
+
+### Performance Requirements
+- MUST ensure deployed app responds in <3s for chat queries
+- MUST optimize Docker images (<500MB total)
+- MUST configure appropriate resource limits (CPU, memory)
+- MUST handle concurrent requests efficiently
+- MUST minimize pod startup time (<30s for all services)
+
+### Documentation Requirements
+- MUST update README with Minikube setup instructions
+- MUST document Helm installation commands
+- MUST document AI skill usage (kubectl-ai, kagent examples)
+- MUST provide troubleshooting guide for common deployment issues
+- MUST document all environment variables and secrets
+- MUST include architecture diagram showing Kubernetes components
+- MUST document rollback procedures
+
+### Technology Stack (Phase IV Specific)
+- Container Runtime: Docker
+- Orchestration: Kubernetes (Minikube for local deployment)
+- Package Manager: Helm 3+
+- AI Tools: kubectl-ai, kagent
+- Existing Stack: Next.js, FastAPI, SQLModel, Neon Serverless PostgreSQL, Better Auth,
+  Cohere API, OpenAI ChatKit (custom backend), Official MCP SDK
+
+### Constraints (MUST NOT)
+- MUST NOT rewrite working Phase I-III functionality
+- MUST NOT use cloud resources in Phase IV (local Minikube only)
+- MUST NOT manually write YAML files (use spec-driven generation)
+- MUST NOT exceed reasonable scope (focus on deployment, not new features)
+- MUST NOT break existing user isolation or authentication
+- MUST NOT introduce new heavy dependencies without justification
+- MUST NOT switch away from Cohere as LLM provider
+
 ## Quality Gates
 
 A phase is considered COMPLETE only when:
@@ -208,6 +324,69 @@ Phase III is complete when:
 - Clean integration with existing Todo frontend + ChatKit UI
 - Project satisfies all deliverables and requirements listed in Phase III specification
 - No existing Phase I or Phase II functionality is broken
+
+### Phase IV Specific Quality Gates
+
+Phase IV is complete when:
+
+- All existing features from Phase I-III work perfectly in Kubernetes environment (no regressions)
+- Full Phase III chatbot runs locally on Minikube:
+  - Accessible via browser (NodePort or LoadBalancer)
+  - Handles natural language todo management (add, list, complete, delete, update)
+  - Persists data in Neon DB (conversation history survives pod restarts)
+  - User isolation maintained at 100%
+- Deployment is reproducible:
+  - Helm install succeeds on fresh Minikube cluster
+  - All pods start successfully and pass health checks
+  - Services are discoverable and communicate correctly
+- Containerization complete:
+  - All components Dockerized (frontend, backend)
+  - Multi-stage builds implemented
+  - Docker images optimized (<500MB total)
+  - No secrets hardcoded in images
+- Orchestration functional:
+  - Helm charts generated via spec-driven process
+  - Charts are parameterized and reusable
+  - Resource limits and requests configured
+  - Readiness and liveness probes working
+- AI tools demonstrated:
+  - kubectl-ai usage documented and shown
+  - kagent usage documented and shown
+  - AI-assisted workflows captured in CLAUDE.md or demo
+- Reusable intelligence created:
+  - At least 2-3 skills/subagents developed and tested
+  - Skills documented with purpose, inputs, outputs
+  - Skills successfully used for deployment tasks
+- Security measures active:
+  - Kubernetes Secrets used for sensitive data (Cohere API key, DB credentials, JWT secrets)
+  - Basic RBAC implemented
+  - Network policies configured
+  - No secrets exposed in logs or images
+  - Basic security scan passed
+- Observability in place:
+  - Structured JSON logging implemented
+  - Health check endpoints working (/health, /ready)
+  - Readiness and liveness probes configured
+  - Can see errors, latency, and resource usage
+- Performance targets met:
+  - App responds in <3s for chat queries
+  - Pod startup time <30s
+  - No OOM kills under normal load
+- Testing complete:
+  - End-to-end tests pass (chat interactions via kubectl port-forward)
+  - Pod restart scenarios tested (data persists)
+  - Service discovery validated
+  - All Phase I-III features verified in Kubernetes
+- Documentation complete:
+  - README updated with Minikube setup instructions
+  - Helm installation commands documented
+  - AI skill usage examples provided
+  - Troubleshooting guide included
+  - Architecture diagram shows Kubernetes components
+- Project earns Phase IV points (250) + bonuses:
+  - Reusable Intelligence bonus (skills/subagents)
+  - Cloud-Native Blueprints bonus (spec-driven manifests)
+  - Target: +400 potential bonus points
 
 ## Success Criteria
 
@@ -252,4 +431,4 @@ Constitution changes require:
 All feature implementations must be validated against current constitution version.
 Violations must be corrected before phase completion.
 
-**Version**: 1.1.0 | **Ratified**: 2026-01-24 | **Last Amended**: 2026-02-09
+**Version**: 1.3.0 | **Ratified**: 2026-01-24 | **Last Amended**: 2026-02-18
