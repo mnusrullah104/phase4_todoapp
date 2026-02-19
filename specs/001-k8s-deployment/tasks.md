@@ -252,10 +252,10 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Backend Health Endpoints
 
-- [ ] T086 [P] [US4] Implement /health endpoint in backend/main.py returning {"status": "healthy"}
-- [ ] T087 [US4] Implement /ready endpoint in backend/main.py checking database connectivity
-- [ ] T088 [US4] Configure /ready endpoint to return 503 status when database unavailable
-- [ ] T089 [US4] Add timestamp field to health check responses
+- [X] T086 [P] [US4] Implement /health endpoint in backend/main.py returning {"status": "healthy"}
+- [X] T087 [US4] Implement /ready endpoint in backend/main.py checking database connectivity
+- [X] T088 [US4] Configure /ready endpoint to return 503 status when database unavailable
+- [X] T089 [US4] Add timestamp field to health check responses
 
 ### Backend Health Probes
 
