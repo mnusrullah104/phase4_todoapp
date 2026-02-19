@@ -18,15 +18,15 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 **Tasks**:
 
-- [ ] T001 Create docker/ directory structure with backend/ and frontend/ subdirectories
-- [ ] T002 Create helm/ directory structure with todo-app/ chart directory
-- [ ] T003 Create helm/todo-app/templates/ directory for Kubernetes manifests
-- [ ] T004 Create .dockerignore files for backend/ and frontend/ to exclude unnecessary files
-- [ ] T005 Create helm/todo-app/.helmignore to exclude unnecessary files from chart
-- [ ] T006 Verify Docker Desktop is running and accessible via docker ps command
-- [ ] T007 Verify Minikube is installed via minikube version command
-- [ ] T008 Verify kubectl is installed via kubectl version --client command
-- [ ] T009 Verify Helm is installed via helm version command
+- [X] T001 Create docker/ directory structure with backend/ and frontend/ subdirectories
+- [X] T002 Create helm/ directory structure with todo-app/ chart directory
+- [X] T003 Create helm/todo-app/templates/ directory for Kubernetes manifests
+- [X] T004 Create .dockerignore files for backend/ and frontend/ to exclude unnecessary files
+- [X] T005 Create helm/todo-app/.helmignore to exclude unnecessary files from chart
+- [X] T006 Verify Docker Desktop is running and accessible via docker ps command
+- [X] T007 Verify Minikube is installed via minikube version command
+- [X] T008 Verify kubectl is installed via kubectl version --client command
+- [X] T009 Verify Helm is installed via helm version command
 
 **Acceptance**: All directories created, all prerequisite tools verified and accessible.
 
@@ -41,10 +41,10 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 - [ ] T010 Start Minikube cluster with 4 CPUs and 8GB RAM via minikube start command
 - [ ] T011 Enable Minikube ingress addon via minikube addons enable ingress command
 - [ ] T012 Verify Minikube cluster is running via kubectl cluster-info command
-- [ ] T013 Create helm/todo-app/Chart.yaml with chart metadata (name, version, description)
-- [ ] T014 Create helm/todo-app/values.yaml with default configuration values
-- [ ] T015 Create helm/todo-app/templates/_helpers.tpl with template helper functions
-- [ ] T016 Create helm/todo-app/templates/NOTES.txt with post-install instructions
+- [X] T013 Create helm/todo-app/Chart.yaml with chart metadata (name, version, description)
+- [X] T014 Create helm/todo-app/values.yaml with default configuration values
+- [X] T015 Create helm/todo-app/templates/_helpers.tpl with template helper functions
+- [X] T016 Create helm/todo-app/templates/NOTES.txt with post-install instructions
 
 **Acceptance**: Minikube cluster running with ingress enabled, base Helm chart structure created.
 
@@ -67,56 +67,56 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Backend Containerization
 
-- [ ] T017 [P] [US1] Create docker/backend/Dockerfile with multi-stage build (builder + runtime stages)
-- [ ] T018 [US1] Configure backend Dockerfile to use python:3.11-slim base image
-- [ ] T019 [US1] Add non-root user (appuser) to backend Dockerfile for security
-- [ ] T020 [US1] Configure backend Dockerfile to copy requirements.txt and install dependencies in builder stage
-- [ ] T021 [US1] Configure backend Dockerfile to copy application code in runtime stage
-- [ ] T022 [US1] Add HEALTHCHECK instruction to backend Dockerfile for /health endpoint
-- [ ] T023 [US1] Set CMD in backend Dockerfile to run uvicorn with host 0.0.0.0 and port 8000
+- [X] T017 [P] [US1] Create docker/backend/Dockerfile with multi-stage build (builder + runtime stages)
+- [X] T018 [US1] Configure backend Dockerfile to use python:3.11-slim base image
+- [X] T019 [US1] Add non-root user (appuser) to backend Dockerfile for security
+- [X] T020 [US1] Configure backend Dockerfile to copy requirements.txt and install dependencies in builder stage
+- [X] T021 [US1] Configure backend Dockerfile to copy application code in runtime stage
+- [X] T022 [US1] Add HEALTHCHECK instruction to backend Dockerfile for /health endpoint
+- [X] T023 [US1] Set CMD in backend Dockerfile to run uvicorn with host 0.0.0.0 and port 8000
 
 ### Frontend Containerization
 
-- [ ] T024 [P] [US1] Create docker/frontend/Dockerfile with multi-stage build (deps + builder + runner stages)
-- [ ] T025 [US1] Configure frontend Dockerfile to use node:18-alpine base image
-- [ ] T026 [US1] Add non-root user to frontend Dockerfile for security
-- [ ] T027 [US1] Configure frontend Dockerfile deps stage to install production dependencies
-- [ ] T028 [US1] Configure frontend Dockerfile builder stage to run npm build
-- [ ] T029 [US1] Configure frontend Dockerfile runner stage to copy build artifacts and run Next.js
-- [ ] T030 [US1] Set CMD in frontend Dockerfile to run node server.js on port 3000
+- [X] T024 [P] [US1] Create docker/frontend/Dockerfile with multi-stage build (deps + builder + runner stages)
+- [X] T025 [US1] Configure frontend Dockerfile to use node:18-alpine base image
+- [X] T026 [US1] Add non-root user to frontend Dockerfile for security
+- [X] T027 [US1] Configure frontend Dockerfile deps stage to install production dependencies
+- [X] T028 [US1] Configure frontend Dockerfile builder stage to run npm build
+- [X] T029 [US1] Configure frontend Dockerfile runner stage to copy build artifacts and run Next.js
+- [X] T030 [US1] Set CMD in frontend Dockerfile to run node server.js on port 3000
 
 ### Backend Deployment Manifest
 
-- [ ] T031 [US1] Create helm/todo-app/templates/deployment-backend.yaml with Deployment resource
-- [ ] T032 [US1] Configure backend Deployment with 1 replica and app=backend label selector
-- [ ] T033 [US1] Configure backend Deployment pod template with todo-backend:latest image
-- [ ] T034 [US1] Configure backend Deployment with resource requests (100m CPU, 128Mi memory)
-- [ ] T035 [US1] Configure backend Deployment with resource limits (500m CPU, 512Mi memory)
-- [ ] T036 [US1] Configure backend Deployment with port 8000 exposed
-- [ ] T037 [US1] Configure backend Deployment with security context (runAsNonRoot, runAsUser 1000)
+- [X] T031 [US1] Create helm/todo-app/templates/deployment-backend.yaml with Deployment resource
+- [X] T032 [US1] Configure backend Deployment with 1 replica and app=backend label selector
+- [X] T033 [US1] Configure backend Deployment pod template with todo-backend:latest image
+- [X] T034 [US1] Configure backend Deployment with resource requests (100m CPU, 128Mi memory)
+- [X] T035 [US1] Configure backend Deployment with resource limits (500m CPU, 512Mi memory)
+- [X] T036 [US1] Configure backend Deployment with port 8000 exposed
+- [X] T037 [US1] Configure backend Deployment with security context (runAsNonRoot, runAsUser 1000)
 
 ### Frontend Deployment Manifest
 
-- [ ] T038 [P] [US1] Create helm/todo-app/templates/deployment-frontend.yaml with Deployment resource
-- [ ] T039 [US1] Configure frontend Deployment with 1 replica and app=frontend label selector
-- [ ] T040 [US1] Configure frontend Deployment pod template with todo-frontend:latest image
-- [ ] T041 [US1] Configure frontend Deployment with resource requests (100m CPU, 128Mi memory)
-- [ ] T042 [US1] Configure frontend Deployment with resource limits (500m CPU, 512Mi memory)
-- [ ] T043 [US1] Configure frontend Deployment with port 3000 exposed
-- [ ] T044 [US1] Configure frontend Deployment with security context (runAsNonRoot, runAsUser 1000)
+- [X] T038 [P] [US1] Create helm/todo-app/templates/deployment-frontend.yaml with Deployment resource
+- [X] T039 [US1] Configure frontend Deployment with 1 replica and app=frontend label selector
+- [X] T040 [US1] Configure frontend Deployment pod template with todo-frontend:latest image
+- [X] T041 [US1] Configure frontend Deployment with resource requests (100m CPU, 128Mi memory)
+- [X] T042 [US1] Configure frontend Deployment with resource limits (500m CPU, 512Mi memory)
+- [X] T043 [US1] Configure frontend Deployment with port 3000 exposed
+- [X] T044 [US1] Configure frontend Deployment with security context (runAsNonRoot, runAsUser 1000)
 
 ### Service Manifests
 
-- [ ] T045 [P] [US1] Create helm/todo-app/templates/service-backend.yaml with ClusterIP Service
-- [ ] T046 [US1] Configure backend Service with selector app=backend and port 8000
-- [ ] T047 [P] [US1] Create helm/todo-app/templates/service-frontend.yaml with NodePort Service
-- [ ] T048 [US1] Configure frontend Service with selector app=frontend and port 3000
+- [X] T045 [P] [US1] Create helm/todo-app/templates/service-backend.yaml with ClusterIP Service
+- [X] T046 [US1] Configure backend Service with selector app=backend and port 8000
+- [X] T047 [P] [US1] Create helm/todo-app/templates/service-frontend.yaml with NodePort Service
+- [X] T048 [US1] Configure frontend Service with selector app=frontend and port 3000
 
 ### Ingress Manifest
 
-- [ ] T049 [US1] Create helm/todo-app/templates/ingress.yaml with Ingress resource
-- [ ] T050 [US1] Configure Ingress with nginx ingressClassName and host todo-app.local
-- [ ] T051 [US1] Configure Ingress rule to route / path to frontend-service on port 3000
+- [X] T049 [US1] Create helm/todo-app/templates/ingress.yaml with Ingress resource
+- [X] T050 [US1] Configure Ingress with nginx ingressClassName and host todo-app.local
+- [X] T051 [US1] Configure Ingress rule to route / path to frontend-service on port 3000
 
 ### Build and Deploy
 
@@ -152,15 +152,15 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Secret Manifest
 
-- [ ] T057 [US2] Create helm/todo-app/templates/secret.yaml with Secret resource template
-- [ ] T058 [US2] Configure Secret template to reference external secret (created manually)
-- [ ] T059 [US2] Document secret creation process in helm/todo-app/README.md
+- [X] T057 [US2] Create helm/todo-app/templates/secret.yaml with Secret resource template
+- [X] T058 [US2] Configure Secret template to reference external secret (created manually)
+- [X] T059 [US2] Document secret creation process in helm/todo-app/README.md
 
 ### Environment Variable Injection
 
-- [ ] T060 [US2] Update backend Deployment to inject COHERE_API_KEY from app-secrets Secret
-- [ ] T061 [US2] Update backend Deployment to inject DATABASE_URL from app-secrets Secret
-- [ ] T062 [US2] Update backend Deployment to inject JWT_SECRET from app-secrets Secret
+- [X] T060 [US2] Update backend Deployment to inject COHERE_API_KEY from app-secrets Secret
+- [X] T061 [US2] Update backend Deployment to inject DATABASE_URL from app-secrets Secret
+- [X] T062 [US2] Update backend Deployment to inject JWT_SECRET from app-secrets Secret
 
 ### Secret Creation and Validation
 
@@ -171,10 +171,10 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### RBAC Configuration
 
-- [ ] T066a [US2] Create helm/todo-app/templates/serviceaccount.yaml for backend service account
-- [ ] T066b [US2] Create helm/todo-app/templates/role.yaml with minimal permissions for backend
-- [ ] T066c [US2] Create helm/todo-app/templates/rolebinding.yaml binding role to service account
-- [ ] T066d [US2] Update backend Deployment to use service account
+- [X] T066a [US2] Create helm/todo-app/templates/serviceaccount.yaml for backend service account
+- [X] T066b [US2] Create helm/todo-app/templates/role.yaml with minimal permissions for backend
+- [X] T066c [US2] Create helm/todo-app/templates/rolebinding.yaml binding role to service account
+- [X] T066d [US2] Update backend Deployment to use service account
 
 **Acceptance**:
 - Secrets created in todo-app namespace
@@ -201,11 +201,11 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Helm Values Configuration
 
-- [ ] T067 [US3] Update helm/todo-app/values.yaml with backend image configuration (repository, tag, pullPolicy)
-- [ ] T068 [US3] Update helm/todo-app/values.yaml with frontend image configuration (repository, tag, pullPolicy)
-- [ ] T069 [US3] Update helm/todo-app/values.yaml with resource configurations for both components
-- [ ] T070 [US3] Update helm/todo-app/values.yaml with ingress configuration (enabled, host, className)
-- [ ] T071 [US3] Update helm/todo-app/values.yaml with secret reference configuration
+- [X] T067 [US3] Update helm/todo-app/values.yaml with backend image configuration (repository, tag, pullPolicy)
+- [X] T068 [US3] Update helm/todo-app/values.yaml with frontend image configuration (repository, tag, pullPolicy)
+- [X] T069 [US3] Update helm/todo-app/values.yaml with resource configurations for both components
+- [X] T070 [US3] Update helm/todo-app/values.yaml with ingress configuration (enabled, host, className)
+- [X] T071 [US3] Update helm/todo-app/values.yaml with secret reference configuration
 
 ### Deployment Automation
 
@@ -218,14 +218,14 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Documentation
 
-- [ ] T078 [P] [US3] Create helm/todo-app/README.md with prerequisites section
-- [ ] T079 [US3] Document Minikube setup steps in helm/todo-app/README.md
-- [ ] T080 [US3] Document image build and load steps in helm/todo-app/README.md
-- [ ] T081 [US3] Document secret creation steps in helm/todo-app/README.md
-- [ ] T082 [US3] Document helm install command in helm/todo-app/README.md
-- [ ] T083 [US3] Document access methods (port-forward, ingress) in helm/todo-app/README.md
-- [ ] T084 [US3] Document verification steps in helm/todo-app/README.md
-- [ ] T085 [US3] Document cleanup steps in helm/todo-app/README.md
+- [X] T078 [P] [US3] Create helm/todo-app/README.md with prerequisites section
+- [X] T079 [US3] Document Minikube setup steps in helm/todo-app/README.md
+- [X] T080 [US3] Document image build and load steps in helm/todo-app/README.md
+- [X] T081 [US3] Document secret creation steps in helm/todo-app/README.md
+- [X] T082 [US3] Document helm install command in helm/todo-app/README.md
+- [X] T083 [US3] Document access methods (port-forward, ingress) in helm/todo-app/README.md
+- [X] T084 [US3] Document verification steps in helm/todo-app/README.md
+- [X] T085 [US3] Document cleanup steps in helm/todo-app/README.md
 
 **Acceptance**:
 - Single helm install command deploys entire application
@@ -259,19 +259,19 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Backend Health Probes
 
-- [ ] T090 [US4] Add liveness probe to backend Deployment for /health endpoint
-- [ ] T091 [US4] Configure backend liveness probe with initialDelaySeconds=30, periodSeconds=10
-- [ ] T092 [US4] Add readiness probe to backend Deployment for /ready endpoint
-- [ ] T093 [US4] Configure backend readiness probe with initialDelaySeconds=10, periodSeconds=5
-- [ ] T094 [US4] Set failureThreshold=3 for both backend probes
+- [X] T090 [US4] Add liveness probe to backend Deployment for /health endpoint
+- [X] T091 [US4] Configure backend liveness probe with initialDelaySeconds=30, periodSeconds=10
+- [X] T092 [US4] Add readiness probe to backend Deployment for /ready endpoint
+- [X] T093 [US4] Configure backend readiness probe with initialDelaySeconds=10, periodSeconds=5
+- [X] T094 [US4] Set failureThreshold=3 for both backend probes
 
 ### Frontend Health Probes
 
-- [ ] T095 [P] [US4] Add liveness probe to frontend Deployment for / endpoint
-- [ ] T096 [US4] Configure frontend liveness probe with initialDelaySeconds=30, periodSeconds=10
-- [ ] T097 [US4] Add readiness probe to frontend Deployment for / endpoint
-- [ ] T098 [US4] Configure frontend readiness probe with initialDelaySeconds=10, periodSeconds=5
-- [ ] T099 [US4] Set failureThreshold=3 for both frontend probes
+- [X] T095 [P] [US4] Add liveness probe to frontend Deployment for / endpoint
+- [X] T096 [US4] Configure frontend liveness probe with initialDelaySeconds=30, periodSeconds=10
+- [X] T097 [US4] Add readiness probe to frontend Deployment for / endpoint
+- [X] T098 [US4] Configure frontend readiness probe with initialDelaySeconds=10, periodSeconds=5
+- [X] T099 [US4] Set failureThreshold=3 for both frontend probes
 
 ### Validation
 
@@ -312,19 +312,19 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Workflow Documentation
 
-- [ ] T108 [US5] Create docs/ai-tools-usage.md documenting kubectl-ai and kagent setup
-- [ ] T109 [US5] Document kubectl-ai workflow for checking pod status in docs/ai-tools-usage.md
-- [ ] T110 [US5] Document kubectl-ai workflow for viewing logs in docs/ai-tools-usage.md
-- [ ] T111 [US5] Document kubectl-ai workflow for troubleshooting failed pods in docs/ai-tools-usage.md
-- [ ] T112 [US5] Document kagent workflow for deployment analysis in docs/ai-tools-usage.md
-- [ ] T113 [US5] Document kagent workflow for resource optimization in docs/ai-tools-usage.md
+- [X] T108 [US5] Create docs/ai-tools-usage.md documenting kubectl-ai and kagent setup
+- [X] T109 [US5] Document kubectl-ai workflow for checking pod status in docs/ai-tools-usage.md
+- [X] T110 [US5] Document kubectl-ai workflow for viewing logs in docs/ai-tools-usage.md
+- [X] T111 [US5] Document kubectl-ai workflow for troubleshooting failed pods in docs/ai-tools-usage.md
+- [X] T112 [US5] Document kagent workflow for deployment analysis in docs/ai-tools-usage.md
+- [X] T113 [US5] Document kagent workflow for resource optimization in docs/ai-tools-usage.md
 
 ### Practical Examples
 
-- [ ] T114 [US5] Test kubectl-ai with "show me all pods in todo-app namespace" command
-- [ ] T115 [US5] Test kubectl-ai with "get logs from backend pod" command
-- [ ] T116 [US5] Test kagent with deployment health analysis command
-- [ ] T117 [US5] Document actual command outputs in docs/ai-tools-usage.md
+- [X] T114 [US5] Test kubectl-ai with "show me all pods in todo-app namespace" command
+- [X] T115 [US5] Test kubectl-ai with "get logs from backend pod" command
+- [X] T116 [US5] Test kagent with deployment health analysis command
+- [X] T117 [US5] Document actual command outputs in docs/ai-tools-usage.md
 
 **Acceptance**:
 - Both AI tools installed and verified
@@ -351,33 +351,33 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Skill 1: Dockerfile Generator
 
-- [ ] T118 [P] [US6] Create .claude/skills/generate-dockerfile.md skill definition
-- [ ] T119 [US6] Document skill purpose: Generate optimized multi-stage Dockerfiles
-- [ ] T120 [US6] Document skill inputs: language (python/node), base image, app structure
-- [ ] T121 [US6] Document skill outputs: Dockerfile with multi-stage build, security best practices
-- [ ] T122 [US6] Document skill usage examples for Python FastAPI applications
-- [ ] T123 [US6] Document skill usage examples for Node.js Next.js applications
-- [ ] T124 [US6] Test skill by generating Dockerfile for sample application
+- [X] T118 [P] [US6] Create .claude/skills/generate-dockerfile.md skill definition
+- [X] T119 [US6] Document skill purpose: Generate optimized multi-stage Dockerfiles
+- [X] T120 [US6] Document skill inputs: language (python/node), base image, app structure
+- [X] T121 [US6] Document skill outputs: Dockerfile with multi-stage build, security best practices
+- [X] T122 [US6] Document skill usage examples for Python FastAPI applications
+- [X] T123 [US6] Document skill usage examples for Node.js Next.js applications
+- [X] T124 [US6] Test skill by generating Dockerfile for sample application
 
 ### Skill 2: Helm Chart Generator
 
-- [ ] T125 [P] [US6] Create .claude/skills/generate-helm-chart.md skill definition
-- [ ] T126 [US6] Document skill purpose: Generate Kubernetes Helm chart templates
-- [ ] T127 [US6] Document skill inputs: app components, resource requirements, probe configurations
-- [ ] T128 [US6] Document skill outputs: Complete Helm chart with templates and values
-- [ ] T129 [US6] Document skill usage examples for microservices applications
-- [ ] T130 [US6] Test skill by generating Helm chart for sample application
+- [X] T125 [P] [US6] Create .claude/skills/generate-helm-chart.md skill definition
+- [X] T126 [US6] Document skill purpose: Generate Kubernetes Helm chart templates
+- [X] T127 [US6] Document skill inputs: app components, resource requirements, probe configurations
+- [X] T128 [US6] Document skill outputs: Complete Helm chart with templates and values
+- [X] T129 [US6] Document skill usage examples for microservices applications
+- [X] T130 [US6] Test skill by generating Helm chart for sample application
 
 ### Skill 3: Deployment Troubleshooter
 
-- [ ] T131 [P] [US6] Create .claude/skills/troubleshoot-k8s-deployment.md skill definition
-- [ ] T132 [US6] Document skill purpose: Diagnose and fix common Kubernetes deployment issues
-- [ ] T133 [US6] Document skill inputs: namespace, deployment name, error symptoms
-- [ ] T134 [US6] Document skill outputs: Diagnosis report, recommended fixes, kubectl commands
-- [ ] T135 [US6] Document troubleshooting workflows for ImagePullBackOff errors
-- [ ] T136 [US6] Document troubleshooting workflows for CrashLoopBackOff errors
-- [ ] T137 [US6] Document troubleshooting workflows for pod scheduling failures
-- [ ] T138 [US6] Test skill by diagnosing intentionally broken deployment
+- [X] T131 [P] [US6] Create .claude/skills/troubleshoot-k8s-deployment.md skill definition
+- [X] T132 [US6] Document skill purpose: Diagnose and fix common Kubernetes deployment issues
+- [X] T133 [US6] Document skill inputs: namespace, deployment name, error symptoms
+- [X] T134 [US6] Document skill outputs: Diagnosis report, recommended fixes, kubectl commands
+- [X] T135 [US6] Document troubleshooting workflows for ImagePullBackOff errors
+- [X] T136 [US6] Document troubleshooting workflows for CrashLoopBackOff errors
+- [X] T137 [US6] Document troubleshooting workflows for pod scheduling failures
+- [X] T138 [US6] Test skill by diagnosing intentionally broken deployment
 
 **Acceptance**:
 - 3 skills created and documented
@@ -438,13 +438,13 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Documentation Completion
 
-- [ ] T151 [P] Update project README.md with Phase IV Kubernetes deployment section
-- [ ] T152 Update README.md with Minikube setup instructions
-- [ ] T153 Update README.md with quick start guide (5-step process)
+- [X] T151 [P] Update project README.md with Phase IV Kubernetes deployment section
+- [X] T152 Update README.md with Minikube setup instructions
+- [X] T153 Update README.md with quick start guide (5-step process)
 - [ ] T154 Update README.md with troubleshooting section
 - [ ] T155 Create docs/architecture-diagram.md with Kubernetes architecture diagram
 - [ ] T156 Create docs/deployment-guide.md with detailed deployment instructions
-- [ ] T157 Update CLAUDE.md with AI tools and skills used in Phase IV
+- [X] T157 Update CLAUDE.md with AI tools and skills used in Phase IV
 
 ### Demo Preparation
 
