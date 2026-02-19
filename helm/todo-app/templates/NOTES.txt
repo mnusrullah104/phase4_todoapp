@@ -1,0 +1,57 @@
+🎉 Todo AI Chatbot has been deployed to Kubernetes!
+
+Your release is named {{ .Release.Name }}.
+
+To access the application:
+
+{{- if .Values.ingress.enabled }}
+
+1. Via Ingress (Recommended):
+
+   Add the following entry to your /etc/hosts file:
+
+   $(minikube ip) {{ .Values.ingress.host }}
+
+   Then access the application at:
+   http://{{ .Values.ingress.host }}
+
+{{- end }}
+
+2. Via Port Forward:
+
+   kubectl port-forward svc/frontend-service {{ .Values.frontend.service.port }}:{{ .Values.frontend.service.port }} -n {{ .Values.global.namespace }}
+
+   Then access the application at:
+   http://localhost:{{ .Values.frontend.service.port }}
+
+3. Via Minikube Service:
+
+   minikube service frontend-service -n {{ .Values.global.namespace }}
+
+To check the status of your deployment:
+
+  kubectl get pods -n {{ .Values.global.namespace }}
+  kubectl get services -n {{ .Values.global.namespace }}
+
+To view logs:
+
+  Backend:  kubectl logs -l app=backend -n {{ .Values.global.namespace }} --tail=50
+  Frontend: kubectl logs -l app=frontend -n {{ .Values.global.namespace }} --tail=50
+
+To verify health:
+
+  kubectl port-forward svc/backend-service 8000:8000 -n {{ .Values.global.namespace }}
+  curl http://localhost:8000/health
+  curl http://localhost:8000/ready
+
+⚠️  IMPORTANT: Make sure you have created the required secrets before deployment:
+
+  kubectl create secret generic {{ .Values.secrets.name }} \
+    --from-literal={{ .Values.secrets.keys.cohereApiKey }}='your-cohere-api-key' \
+    --from-literal={{ .Values.secrets.keys.databaseUrl }}='your-database-url' \
+    --from-literal={{ .Values.secrets.keys.jwtSecret }}='your-jwt-secret' \
+    --namespace={{ .Values.global.namespace }}
+
+For more information, see the README.md file.
+
+Happy chatting! 🤖

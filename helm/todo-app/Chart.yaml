@@ -1,0 +1,16 @@
+apiVersion: v2
+name: todo-app
+description: A Helm chart for Todo AI Chatbot application on Kubernetes
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - todo
+  - chatbot
+  - ai
+  - kubernetes
+maintainers:
+  - name: Todo App Team
+home: https://github.com/mnusrullah104/phase4_todoapp
+sources:
+  - https://github.com/mnusrullah104/phase4_todoapp

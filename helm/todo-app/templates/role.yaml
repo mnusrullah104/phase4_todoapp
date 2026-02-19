@@ -1,0 +1,22 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: backend-role
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "todo-app.backend.labels" . | nindent 4 }}
+rules:
+# Minimal permissions for backend service
+# Allow reading secrets (for application configuration)
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list"]
+  resourceNames: ["{{ .Values.secrets.name }}"]
+# Allow reading configmaps (for application configuration)
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list"]
+# Allow reading services (for service discovery)
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list"]
