@@ -376,6 +376,23 @@ Three Claude Code skills are available for deployment automation:
 
 See `.claude/skills/` directory for skill documentation.
 
+**Troubleshooting:**
+
+Common issues and solutions:
+
+| Issue | Symptoms | Solution |
+|-------|----------|----------|
+| ImagePullBackOff | Pods stuck in ImagePullBackOff | Images not loaded into Minikube. Run `minikube image load todo-backend:latest` and `minikube image load todo-frontend:latest` |
+| CrashLoopBackOff | Pods restarting repeatedly | Check logs: `kubectl logs -n todo-app <pod-name>`. Verify secrets exist: `kubectl get secret app-secrets -n todo-app` |
+| Pending Pods | Pods stuck in Pending state | Insufficient resources. Increase Minikube: `minikube delete && minikube start --cpus=4 --memory=8192` |
+| Secret Not Found | Backend fails to start | Create secrets: `kubectl create secret generic app-secrets --from-literal=COHERE_API_KEY='...' --namespace=todo-app` |
+| Ingress Not Working | Cannot access via todo-app.local | Enable ingress: `minikube addons enable ingress`. Add to /etc/hosts: `echo "$(minikube ip) todo-app.local" >> /etc/hosts` |
+| Port Forward Fails | Connection refused on localhost:3000 | Verify pods running: `kubectl get pods -n todo-app`. Check service: `kubectl get svc frontend-service -n todo-app` |
+
+For detailed troubleshooting workflows, see:
+- [Helm Chart Troubleshooting](helm/todo-app/README.md#troubleshooting)
+- [Deployment Troubleshooter Skill](.claude/skills/troubleshoot-k8s-deployment.md)
+
 ### Deployment Guides
 
 See detailed deployment guides in `docs/deployment/`:
