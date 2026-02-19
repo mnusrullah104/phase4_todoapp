@@ -441,9 +441,9 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 - [X] T151 [P] Update project README.md with Phase IV Kubernetes deployment section
 - [X] T152 Update README.md with Minikube setup instructions
 - [X] T153 Update README.md with quick start guide (5-step process)
-- [ ] T154 Update README.md with troubleshooting section
-- [ ] T155 Create docs/architecture-diagram.md with Kubernetes architecture diagram
-- [ ] T156 Create docs/deployment-guide.md with detailed deployment instructions
+- [X] T154 Update README.md with troubleshooting section
+- [X] T155 Create docs/architecture-diagram.md with Kubernetes architecture diagram
+- [X] T156 Create docs/deployment-guide.md with detailed deployment instructions
 - [X] T157 Update CLAUDE.md with AI tools and skills used in Phase IV
 
 ### Demo Preparation
