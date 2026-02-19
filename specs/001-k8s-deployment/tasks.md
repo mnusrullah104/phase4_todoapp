@@ -10,7 +10,7 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 **Implementation Strategy**: MVP-first approach focusing on P1 user stories (US1-US3) for core deployment capability, followed by P2 enhancements (US4-US6), and P3 optimizations (US7).
 
-**Total Estimated Tasks**: 65 tasks across 10 phases
+**Total Estimated Tasks**: 172 tasks across 10 phases
 
 ## Phase 1: Setup and Project Structure
 
@@ -125,6 +125,7 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 - [ ] T054 [US1] Load backend image to Minikube via minikube image load todo-backend:latest
 - [ ] T055 [US1] Load frontend image to Minikube via minikube image load todo-frontend:latest
 - [ ] T056 [US1] Verify images loaded via minikube image ls | grep todo-
+- [ ] T056a [US1] Scan container images for vulnerabilities via docker scan todo-backend:latest and docker scan todo-frontend:latest
 
 **Acceptance**:
 - Both Docker images built successfully (<600MB total)
@@ -167,6 +168,13 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 - [ ] T064 [US2] Create app-secrets Secret with COHERE_API_KEY, DATABASE_URL, JWT_SECRET via kubectl create secret
 - [ ] T065 [US2] Verify secret created via kubectl get secret app-secrets -n todo-app
 - [ ] T066 [US2] Verify secret keys exist via kubectl get secret app-secrets -n todo-app -o jsonpath='{.data}'
+
+### RBAC Configuration
+
+- [ ] T066a [US2] Create helm/todo-app/templates/serviceaccount.yaml for backend service account
+- [ ] T066b [US2] Create helm/todo-app/templates/role.yaml with minimal permissions for backend
+- [ ] T066c [US2] Create helm/todo-app/templates/rolebinding.yaml binding role to service account
+- [ ] T066d [US2] Update backend Deployment to use service account
 
 **Acceptance**:
 - Secrets created in todo-app namespace
@@ -446,11 +454,13 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Final Validation
 
+- [ ] T160a [P] Verify all Phase III functionality preserved: user isolation (100%), conversation persistence, Neon DB integration, Cohere API, all 5 MCP tools, ChatKit UI
 - [ ] T161 Verify all 5 MCP tools work in deployed environment (add, list, complete, delete, update)
 - [ ] T162 Verify conversation history persists across pod restarts
 - [ ] T163 Verify no secrets in container images via docker history todo-backend:latest
 - [ ] T164 Verify deployment succeeds on fresh Minikube cluster (clean test)
-- [ ] T165 Verify all 12 success criteria from spec.md are met
+- [ ] T165 Verify input validation at API boundaries (inherited from Phase III backend)
+- [ ] T166 Verify all 12 success criteria from spec.md are met
 
 **Acceptance**:
 - All documentation complete and accurate
@@ -540,15 +550,15 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 |-------|-----------|------------|----------------|
 | Phase 1 | Setup | 9 | 0 |
 | Phase 2 | Foundational | 7 | 0 |
-| Phase 3 | US1 (P1) | 40 | 12 |
-| Phase 4 | US2 (P1) | 10 | 0 |
+| Phase 3 | US1 (P1) | 41 | 12 |
+| Phase 4 | US2 (P1) | 14 | 0 |
 | Phase 5 | US3 (P1) | 19 | 1 |
 | Phase 6 | US4 (P2) | 18 | 3 |
 | Phase 7 | US5 (P2) | 14 | 2 |
 | Phase 8 | US6 (P2) | 21 | 3 |
 | Phase 9 | US7 (P3) | 12 | 3 |
-| Phase 10 | Polish | 15 | 1 |
-| **Total** | | **165** | **25** |
+| Phase 10 | Polish | 17 | 2 |
+| **Total** | | **172** | **26** |
 
 ---
 
