@@ -206,5 +206,108 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 - `history/adr/` — Architecture Decision Records
 - `.specify/` — SpecKit Plus templates and scripts
 
+## Phase IV - Kubernetes Deployment Tools
+
+### Reusable Deployment Skills
+
+Three specialized skills are available in `.claude/skills/` for automated deployment workflows:
+
+1. **generate-dockerfile** (`.claude/skills/generate-dockerfile.md`)
+   - Purpose: Generate optimized multi-stage Dockerfiles
+   - Inputs: language, base_image, app_structure, port, health_check_path
+   - Outputs: Production-ready Dockerfile with security best practices
+   - Features: Multi-stage builds, non-root users, health checks, minimal image size
+   - Examples: Python FastAPI, Node.js Next.js applications
+
+2. **generate-helm-chart** (`.claude/skills/generate-helm-chart.md`)
+   - Purpose: Generate complete Kubernetes Helm charts
+   - Inputs: app_components, resource_requirements, probe_configurations, secrets, ingress_config
+   - Outputs: Full Helm chart with templates, values, helpers, NOTES
+   - Features: Parameterization, RBAC, health probes, resource management
+   - Examples: Microservices applications, single component deployments
+
+3. **troubleshoot-k8s-deployment** (`.claude/skills/troubleshoot-k8s-deployment.md`)
+   - Purpose: Diagnose and fix Kubernetes deployment issues
+   - Inputs: namespace, deployment_name, pod_name, error_symptoms
+   - Outputs: Diagnosis report, root cause, recommended fixes, kubectl commands
+   - Features: Automated diagnostics, actionable recommendations, prevention tips
+   - Examples: ImagePullBackOff, CrashLoopBackOff, Pending pods, resource constraints
+
+### AI-Assisted Kubernetes Operations
+
+**kubectl-ai** - Natural language interface for kubectl commands:
+```bash
+kubectl ai "show me all pods in todo-app namespace"
+kubectl ai "get logs from backend pod in todo-app"
+kubectl ai "restart the backend deployment"
+```
+
+**kagent** - Agentic cluster management and troubleshooting:
+```bash
+kagent analyze deployment backend-deployment -n todo-app
+kagent optimize resources -n todo-app
+kagent troubleshoot pod <pod-name> -n todo-app
+```
+
+**Documentation:**
+- Comprehensive guide: `docs/ai-tools-usage.md`
+- Installation instructions for kubectl-ai and kagent
+- 5+ kubectl-ai workflows with examples
+- 3+ kagent workflows with examples
+- Practical deployment, troubleshooting, and monitoring workflows
+- CI/CD integration examples
+
+### Deployment Architecture
+
+**Containerization:**
+- Backend: Python 3.11-slim, multi-stage build, non-root user (appuser)
+- Frontend: Node.js 18-alpine, 3-stage build, non-root user (nextjs)
+- Image optimization: <600MB total for both images
+- Security: Health checks, minimal attack surface, no root execution
+
+**Kubernetes Resources:**
+- Helm chart: `helm/todo-app/`
+- Deployments: backend-deployment, frontend-deployment
+- Services: backend-service (ClusterIP), frontend-service (NodePort)
+- Ingress: nginx ingress controller (optional)
+- RBAC: ServiceAccount, Role, RoleBinding with minimal permissions
+- Secrets: app-secrets (Cohere API key, Database URL, JWT secret)
+
+**Health & Observability:**
+- Liveness probes: /health endpoint (30s initial delay, 10s period)
+- Readiness probes: /ready endpoint (10s initial delay, 5s period)
+- Resource requests: 100m CPU, 128Mi memory
+- Resource limits: 500m CPU, 512Mi memory
+- Structured JSON logging in backend
+
+**Quick Start:**
+```bash
+# Start Minikube
+minikube start --cpus=4 --memory=8192
+minikube addons enable ingress
+
+# Build and load images
+docker build -t todo-backend:latest -f docker/backend/Dockerfile backend/
+minikube image load todo-backend:latest
+docker build -t todo-frontend:latest -f docker/frontend/Dockerfile frontend/
+minikube image load todo-frontend:latest
+
+# Create secrets
+kubectl create namespace todo-app
+kubectl create secret generic app-secrets \
+  --from-literal=COHERE_API_KEY='your-key' \
+  --from-literal=DATABASE_URL='your-db-url' \
+  --from-literal=JWT_SECRET='your-secret' \
+  --namespace=todo-app
+
+# Deploy with Helm
+helm install todo-app helm/todo-app --namespace todo-app
+
+# Access application
+kubectl port-forward -n todo-app service/frontend-service 3000:3000
+```
+
+See `helm/todo-app/README.md` for detailed deployment guide and troubleshooting.
+
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.

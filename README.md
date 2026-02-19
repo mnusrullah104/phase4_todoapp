@@ -4,6 +4,16 @@ A modern, production-ready multi-user task management application with AI chatbo
 
 ## 🚀 Features
 
+### Phase IV - Kubernetes Deployment (NEW!)
+- **🐳 Containerization**: Multi-stage Docker builds for optimized images (<600MB total)
+- **☸️ Kubernetes Orchestration**: Complete Helm chart for local Minikube deployment
+- **🔒 Secure Secrets Management**: Kubernetes Secrets for credentials (Cohere API, Database, JWT)
+- **🏥 Health Monitoring**: Liveness and readiness probes for self-healing
+- **🤖 AI-Assisted Operations**: kubectl-ai and kagent for natural language cluster management
+- **♻️ Reusable Intelligence**: 3 deployment skills (Dockerfile generator, Helm chart generator, troubleshooter)
+- **📊 RBAC Security**: Role-based access control with minimal permissions
+- **📦 Single-Command Deployment**: `helm install` deploys entire application
+
 ### Phase III - AI Chatbot Integration
 - **Natural Language Task Management**: Create, update, and manage tasks using conversational AI
 - **Smart Navigation**: Navigate the app using voice commands ("Go to dashboard", "Open tasks")
@@ -268,6 +278,103 @@ cd frontend
 echo "NEXT_PUBLIC_API_URL=http://localhost:8001" > .env.local
 npm run dev
 ```
+
+### Phase IV - Kubernetes Deployment (Minikube)
+
+Deploy the complete application stack to a local Kubernetes cluster using Helm.
+
+**Prerequisites:**
+- Docker Desktop (with Kubernetes enabled) or Minikube
+- kubectl CLI tool
+- Helm 3.x
+- 4GB+ RAM available for cluster
+
+**Quick Start (5 Steps):**
+
+1. **Start Minikube and enable ingress**
+   ```bash
+   minikube start --cpus=4 --memory=8192
+   minikube addons enable ingress
+   minikube addons enable metrics-server
+   ```
+
+2. **Build and load Docker images**
+   ```bash
+   # Build backend image
+   docker build -t todo-backend:latest -f docker/backend/Dockerfile backend/
+   minikube image load todo-backend:latest
+
+   # Build frontend image
+   docker build -t todo-frontend:latest -f docker/frontend/Dockerfile frontend/
+   minikube image load todo-frontend:latest
+   ```
+
+3. **Create Kubernetes secrets**
+   ```bash
+   kubectl create namespace todo-app
+   kubectl create secret generic app-secrets \
+     --from-literal=COHERE_API_KEY='your-cohere-api-key' \
+     --from-literal=DATABASE_URL='your-neon-db-url' \
+     --from-literal=JWT_SECRET='your-jwt-secret' \
+     --namespace=todo-app
+   ```
+
+4. **Deploy with Helm**
+   ```bash
+   helm install todo-app helm/todo-app --namespace todo-app
+   ```
+
+5. **Access the application**
+   ```bash
+   # Option 1: Port forwarding (quick access)
+   kubectl port-forward -n todo-app service/frontend-service 3000:3000
+   # Access at http://localhost:3000
+
+   # Option 2: Ingress (production-like)
+   echo "$(minikube ip) todo-app.local" | sudo tee -a /etc/hosts
+   # Access at http://todo-app.local
+
+   # Option 3: NodePort (direct node access)
+   minikube service frontend-service -n todo-app
+   ```
+
+**Verify Deployment:**
+```bash
+# Check pod status
+kubectl get pods -n todo-app
+
+# Check services
+kubectl get svc -n todo-app
+
+# View logs
+kubectl logs -n todo-app -l app=backend --tail=50
+kubectl logs -n todo-app -l app=frontend --tail=50
+```
+
+**AI-Assisted Operations:**
+
+Use kubectl-ai for natural language cluster management:
+```bash
+kubectl ai "show me all pods in todo-app namespace"
+kubectl ai "get logs from backend pod in todo-app"
+kubectl ai "restart the backend deployment"
+```
+
+See [AI Tools Usage Guide](docs/ai-tools-usage.md) for comprehensive kubectl-ai and kagent examples.
+
+**Detailed Documentation:**
+- [Helm Chart README](helm/todo-app/README.md) - Complete deployment guide
+- [AI Tools Usage](docs/ai-tools-usage.md) - kubectl-ai and kagent workflows
+- [Troubleshooting Guide](helm/todo-app/README.md#troubleshooting) - Common issues and fixes
+
+**Reusable Deployment Skills:**
+
+Three Claude Code skills are available for deployment automation:
+- `generate-dockerfile` - Create optimized multi-stage Dockerfiles
+- `generate-helm-chart` - Generate complete Helm charts
+- `troubleshoot-k8s-deployment` - Diagnose and fix deployment issues
+
+See `.claude/skills/` directory for skill documentation.
 
 ### Deployment Guides
 
