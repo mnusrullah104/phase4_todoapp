@@ -448,7 +448,7 @@ This document breaks down the Phase IV Kubernetes deployment implementation into
 
 ### Demo Preparation
 
-- [ ] T158 Create demo script for <90 second video showing deployment process
+- [X] T158 Create demo script for <90 second video showing deployment process
 - [ ] T159 Record demo video showing: kubectl get pods, browser chat, task creation
 - [ ] T160 Verify demo video shows all required elements (pods, chat, natural language)
 
